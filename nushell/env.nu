@@ -3,7 +3,7 @@
 # version = "0.95.0"
 
 def create_left_prompt [] {
-    let dir = match (do --ignore-shell-errors { $env.PWD | path relative-to $nu.home-path }) {
+    let dir = match (do --ignore-errors { $env.PWD | path relative-to $nu.home-path }) {
         null => $env.PWD
         '' => '~'
         $relative_pwd => ([~ $relative_pwd] | path join)
@@ -101,21 +101,12 @@ if 'IN_NIX_SHELL' not-in $env and 'DEVBOX_SHELL_ENABLED' not-in $env {
     $env.PATH = ($env.PATH | append [
         /opt/homebrew/bin
         /run/current-system/sw/bin
-        /Users/omerxx/.local/bin
+        /Users/yanngodeau/.local/bin
         /opt/homebrew/opt/ruby/bin
         /opt/homebrew/sbin
-        /Users/omerxx/.opencode/bin
+        /Users/yanngodeau/.opencode/bin
     ])
 }
-
-devbox global shellenv --format nushell --preserve-path-stack -r
-  | lines 
-  | parse "$env.{name} = \"{value}\""
-  | where name != null 
-  | transpose -r 
-  | into record 
-  | load-env
-
 
 # To load from a custom file you can use:
 # source ($nu.default-config-dir | path join 'custom.nu')
@@ -124,8 +115,8 @@ mkdir ~/.cache/starship
 starship init nu | save -f ~/.cache/starship/init.nu
 zoxide init nushell | save -f ~/.zoxide.nu
 
-$env.STARSHIP_CONFIG = /Users/omerxx/.config/starship/starship.toml
-$env.NIX_CONF_DIR = /Users/omerxx/.config/nix
+$env.STARSHIP_CONFIG = "/Users/yanngodeau/.config/starship/starship.toml"
+$env.NIX_CONF_DIR = "/Users/yanngodeau/.config/nix"
 $env.CARAPACE_BRIDGES = 'zsh,fish,bash,inshellisense' # optional
 mkdir ~/.cache/carapace
 carapace _carapace nushell | save --force ~/.cache/carapace/init.nu

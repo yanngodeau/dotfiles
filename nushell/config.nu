@@ -1,6 +1,6 @@
 # Nushell Config File
 #
-# version = "0.95.0"
+# version = "0.110.0"
 
 # For more information on defining custom themes, see
 # https://www.nushell.sh/book/coloring_and_theming.html
@@ -208,8 +208,7 @@ $env.config = {
     }
 
     filesize: {
-        metric: false # true => KB, MB, GB (ISO standard), false => KiB, MiB, GiB (Windows standard)
-        format: "auto" # b, kb, kib, mb, mib, gb, gib, tb, tib, pb, pib, eb, eib, auto
+        unit: "binary" # "binary" => KiB, MiB, GiB (vs "metric" for KB, MB, GB)
     }
 
     cursor_shape: {
@@ -219,8 +218,7 @@ $env.config = {
     }
 
     color_config: $dark_theme # if you want a more interesting theme, you can replace the empty record with `$dark_theme`, `$light_theme` or another custom record
-    use_grid_icons: true
-    footer_mode: "25" # always, never, number_of_rows, auto
+    footer_mode: 25  # number of rows shown in table footer (set to always/never/auto if you prefer)
     float_precision: 2 # the precision for displaying floats in tables
     buffer_editor: "" # command that will be used to edit the current line buffer with ctrl+o, if unset fallback to $env.EDITOR and $env.VISUAL
     use_ansi_coloring: true
@@ -950,14 +948,21 @@ alias kns = kubens
 alias kl = kubectl logs -f
 alias ke = kubectl exec -it
 
-source ~/.config/nushell/env.nu
-source ~/.zoxide.nu
-source ~/.cache/carapace/init.nu
-source ~/.local/share/atuin/init.nu
-use ~/.cache/starship/init.nu
+const ENV_NU = "~/.config/nushell/env.nu"
+const ZOXIDE_INIT = "~/.zoxide.nu"
+const CARAPACE_INIT = "~/.cache/carapace/init.nu"
+const ATUIN_INIT = "~/.local/share/atuin/init.nu"
+const STARSHIP_INIT = "~/.cache/starship/init.nu"
+
+if ($ENV_NU | path exists) { source ~/.config/nushell/env.nu }
+if ($ZOXIDE_INIT | path exists) { source ~/.zoxide.nu }
+if ($CARAPACE_INIT | path exists) { source ~/.cache/carapace/init.nu }
+if ($ATUIN_INIT | path exists) { source ~/.local/share/atuin/init.nu }
+if ($STARSHIP_INIT | path exists) { use ~/.cache/starship/init.nu }
+
 
 let ruby_ver = "3.4.0"
-let gem_home = ($nu.home-path | path join ".gem" "ruby" $ruby_ver)
+let gem_home = ($nu.home-dir | path join ".gem" "ruby" $ruby_ver)
 let gem_bin = ($gem_home | path join "bin")
 
 # Set GEM paths
