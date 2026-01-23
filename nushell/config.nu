@@ -899,11 +899,20 @@ $env.config = {
     ]
 }
 
+# ============================================================================
+# Custom Functions
+# ============================================================================
+
 def --env cx [arg] {
     cd $arg
     ls -l
 }
 
+# ============================================================================
+# Aliases
+# ============================================================================
+
+# General
 alias l = ls --all
 alias c = clear
 alias ll = ls -l
@@ -945,21 +954,26 @@ alias kgpo = kubectl get pod
 alias kgd = kubectl get deployments
 alias kc = kubectx
 alias kns = kubens
-alias kl = kubectl logs -f
 alias ke = kubectl exec -it
 
-const ENV_NU = "~/.config/nushell/env.nu"
-const ZOXIDE_INIT = "~/.zoxide.nu"
-const CARAPACE_INIT = "~/.cache/carapace/init.nu"
-const ATUIN_INIT = "~/.local/share/atuin/init.nu"
-const STARSHIP_INIT = "~/.cache/starship/init.nu"
+# ============================================================================
+# Tool Initialization (sourcing)
+# ============================================================================
+# NOTE: These files are created by env.nu (even if empty when tools aren't installed)
+# This allows unconditional sourcing without parse-time errors.
+#
+# IMPORTANT: In Nushell, `source` is evaluated at parse-time, NOT runtime.
+# Conditional sourcing like `if (path exists) { source file }` does NOT work
+# as expected. The solution is to ensure files always exist (done in env.nu).
 
-if ($ENV_NU | path exists) { source ~/.config/nushell/env.nu }
-if ($ZOXIDE_INIT | path exists) { source ~/.zoxide.nu }
-if ($CARAPACE_INIT | path exists) { source ~/.cache/carapace/init.nu }
-if ($ATUIN_INIT | path exists) { source ~/.local/share/atuin/init.nu }
-if ($STARSHIP_INIT | path exists) { use ~/.cache/starship/init.nu }
+source ~/.zoxide.nu
+source ~/.cache/carapace/init.nu
+source ~/.local/share/atuin/init.nu
+use ~/.cache/starship/init.nu
 
+# ============================================================================
+# Ruby Configuration (dynamic paths)
+# ============================================================================
 
 let ruby_ver = "3.4.0"
 let gem_home = ($nu.home-dir | path join ".gem" "ruby" $ruby_ver)
@@ -971,7 +985,7 @@ $env.GEM_PATH = $gem_home
 
 # Add gem bin to PATH if it exists
 if ($gem_bin | path exists) {
-  $env.PATH = ($env.PATH | prepend $gem_bin)
+    $env.PATH = ($env.PATH | prepend $gem_bin)
 }
-$env.DIRENV_LOG_FORMAT = ""
 
+$env.DIRENV_LOG_FORMAT = ""
