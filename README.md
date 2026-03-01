@@ -1,11 +1,11 @@
 # Dotfiles
 
-macOS dotfiles managed with [GNU Stow](https://www.gnu.org/software/stow/). Each directory is a module that gets symlinked into `~/.config`.
+Cross-platform dotfiles (macOS & Linux) managed with [GNU Stow](https://www.gnu.org/software/stow/). Each directory is a module that gets symlinked into `~/.config`.
 
 ## Prerequisites
 
 - [GNU Stow](https://www.gnu.org/software/stow/)
-- [Nix](https://nixos.org/) (optional, for nix-darwin system configuration)
+- [Nix](https://nixos.org/) (optional, for nix-darwin on macOS)
 
 ## Installation
 
@@ -14,6 +14,20 @@ stow .
 ```
 
 This reads `.stowrc` which targets `~/.config`, so every module directory (e.g. `nvim/`) is symlinked to `~/.config/nvim/`.
+
+### Set nushell as default shell
+
+**macOS** (via nix-darwin):
+
+```bash
+darwin-rebuild switch --flake ~/.config/nix-darwin
+```
+
+**Linux**:
+
+```bash
+chsh -s $(which nu)
+```
 
 ## What's included
 
@@ -46,7 +60,7 @@ This reads `.stowrc` which targets `~/.config`, so every module directory (e.g. 
 |--------|-------------|
 | `nvim` | Neovim with [LazyVim](https://lazyvim.github.io/) — LSP, completion (blink.cmp), treesitter, fzf-lua, gitsigns, mini plugins, Go support |
 
-### Window management & automation (macOS)
+### Window management & automation (macOS only)
 
 | Module | Description |
 |--------|-------------|
@@ -62,7 +76,7 @@ This reads `.stowrc` which targets `~/.config`, so every module directory (e.g. 
 | Module | Description |
 |--------|-------------|
 | `nix` | Nix package manager configuration (flakes enabled) |
-| `nix-darwin` | Nix Darwin system config — homebrew, dock, Finder preferences, TouchID sudo, home-manager, nushell as default shell |
+| `nix-darwin` | Nix Darwin system config (macOS only) — homebrew, dock, Finder preferences, TouchID sudo, home-manager, nushell as default shell |
 | `ssh` | SSH client configuration |
 
 ## Post-install
@@ -75,7 +89,7 @@ Install TPM then press `prefix + I` inside tmux to fetch plugins:
 git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 ```
 
-### Hammerspoon
+### Hammerspoon (macOS only)
 
 Point Hammerspoon to the stowed config:
 
