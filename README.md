@@ -21,8 +21,8 @@ This reads `.stowrc` which targets `~/.config`, so every module directory (e.g. 
 
 | Module | Description |
 |--------|-------------|
-| `zshrc` | Zsh configuration — aliases (git, docker, k8s), vi mode, FZF integration, zoxide, direnv |
-| `nushell` | Nushell configuration with custom themes |
+| `nushell` | Nushell — default shell, aliases (git, docker, k8s), vi mode, carapace completions, zoxide, direnv, starship |
+| `zshrc` | Zsh — fallback shell, aliases, FZF integration, zoxide, direnv |
 | `starship` | Starship prompt — Catppuccin Mocha palette, AWS/Kubernetes context |
 | `atuin` | Shell history sync and search |
 
@@ -62,7 +62,7 @@ This reads `.stowrc` which targets `~/.config`, so every module directory (e.g. 
 | Module | Description |
 |--------|-------------|
 | `nix` | Nix package manager configuration (flakes enabled) |
-| `nix-darwin` | Nix Darwin system config — homebrew, dock, Finder preferences, TouchID sudo, home-manager |
+| `nix-darwin` | Nix Darwin system config — homebrew, dock, Finder preferences, TouchID sudo, home-manager, nushell as default shell |
 | `ssh` | SSH client configuration |
 
 ## Post-install
@@ -87,6 +87,6 @@ defaults write org.hammerspoon.Hammerspoon MJConfigFile "~/.config/hammerspoon/i
 
 - **Theme**: Catppuccin Mocha across Ghostty, WezTerm, Tmux, Starship
 - **Font**: JetBrains Mono
-- **Shell**: Zsh (primary), Nushell (secondary)
+- **Shell**: Nushell (default), Zsh (fallback)
 - **Editor**: Neovim via `v` alias
 - **Navigation aliases**: `cx` (cd + list), `fcd` (fuzzy cd), `fv` (fuzzy vim), `rr` (ranger)
