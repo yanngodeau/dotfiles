@@ -17,10 +17,10 @@ This reads `.stowrc` which targets `~/.config`, so every module directory (e.g. 
 
 ### Set nushell as default shell
 
-**macOS** (via nix-darwin):
+**macOS** (via nix-darwin, requires `--impure` for dynamic username):
 
 ```bash
-darwin-rebuild switch --flake ~/.config/nix-darwin
+darwin-rebuild switch --flake ~/.config/nix-darwin#default --impure
 ```
 
 **Linux**:
