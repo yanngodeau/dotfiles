@@ -1,6 +1,92 @@
-# Dotfiles symlinked on my machine
+# Dotfiles
 
-### Install with stow:
+macOS dotfiles managed with [GNU Stow](https://www.gnu.org/software/stow/). Each directory is a module that gets symlinked into `~/.config`.
+
+## Prerequisites
+
+- [GNU Stow](https://www.gnu.org/software/stow/)
+- [Nix](https://nixos.org/) (optional, for nix-darwin system configuration)
+
+## Installation
+
 ```bash
 stow .
 ```
+
+This reads `.stowrc` which targets `~/.config`, so every module directory (e.g. `nvim/`) is symlinked to `~/.config/nvim/`.
+
+## What's included
+
+### Shell
+
+| Module | Description |
+|--------|-------------|
+| `zshrc` | Zsh configuration — aliases (git, docker, k8s), vi mode, FZF integration, zoxide, direnv |
+| `nushell` | Nushell configuration with custom themes |
+| `starship` | Starship prompt — Catppuccin Mocha palette, AWS/Kubernetes context |
+| `atuin` | Shell history sync and search |
+
+### Terminal emulators
+
+| Module | Description |
+|--------|-------------|
+| `ghostty` | Ghostty — Catppuccin Mocha, 70% opacity, blur, multiple theme variants |
+| `wezterm` | WezTerm — Catppuccin Mocha, JetBrains Mono 16pt, custom keybinds |
+
+### Terminal multiplexers
+
+| Module | Description |
+|--------|-------------|
+| `tmux` | Tmux — prefix `Ctrl-A`, vi keybindings, Catppuccin theme, 15+ plugins (TPM, resurrect, continuum, sessionx, floax) |
+| `zellij` | Zellij — custom keybindings, hjkl pane navigation |
+
+### Editor
+
+| Module | Description |
+|--------|-------------|
+| `nvim` | Neovim with [LazyVim](https://lazyvim.github.io/) — LSP, completion (blink.cmp), treesitter, fzf-lua, gitsigns, mini plugins, Go support |
+
+### Window management & automation (macOS)
+
+| Module | Description |
+|--------|-------------|
+| `aerospace` | AeroSpace tiling window manager — 4 workspaces, auto-layout, floating rules per app |
+| `sketchybar` | SketchyBar status bar — scripts for CPU, calendar, GitHub notifications, workspaces |
+| `skhd` | Simple hotkey daemon — app launchers, custom shortcuts |
+| `karabiner` | Karabiner-Elements keyboard remapping |
+| `hammerspoon` | Hammerspoon automation — calendar, app launcher, custom hotkeys |
+| `kindavim` | KindaVim — vi keybindings in native macOS text fields |
+
+### System
+
+| Module | Description |
+|--------|-------------|
+| `nix` | Nix package manager configuration (flakes enabled) |
+| `nix-darwin` | Nix Darwin system config — homebrew, dock, Finder preferences, TouchID sudo, home-manager |
+| `ssh` | SSH client configuration |
+
+## Post-install
+
+### Tmux plugins
+
+Install TPM then press `prefix + I` inside tmux to fetch plugins:
+
+```bash
+git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+```
+
+### Hammerspoon
+
+Point Hammerspoon to the stowed config:
+
+```bash
+defaults write org.hammerspoon.Hammerspoon MJConfigFile "~/.config/hammerspoon/init.lua"
+```
+
+## Key details
+
+- **Theme**: Catppuccin Mocha across Ghostty, WezTerm, Tmux, Starship
+- **Font**: JetBrains Mono
+- **Shell**: Zsh (primary), Nushell (secondary)
+- **Editor**: Neovim via `v` alias
+- **Navigation aliases**: `cx` (cd + list), `fcd` (fuzzy cd), `fv` (fuzzy vim), `rr` (ranger)
