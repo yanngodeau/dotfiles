@@ -60,16 +60,12 @@ chsh -s $(which nu)
 |--------|-------------|
 | `nvim` | Neovim with [LazyVim](https://lazyvim.github.io/) — LSP, completion (blink.cmp), treesitter, fzf-lua, gitsigns, mini plugins, Go support |
 
-### Window management & automation (macOS only)
+### Window management (macOS only)
 
 | Module | Description |
 |--------|-------------|
 | `aerospace` | AeroSpace tiling window manager — 4 workspaces, auto-layout, floating rules per app |
-| `sketchybar` | SketchyBar status bar — scripts for CPU, calendar, GitHub notifications, workspaces |
-| `skhd` | Simple hotkey daemon — app launchers, custom shortcuts |
 | `karabiner` | Karabiner-Elements keyboard remapping |
-| `hammerspoon` | Hammerspoon automation — calendar, app launcher, custom hotkeys |
-| `kindavim` | KindaVim — vi keybindings in native macOS text fields |
 
 ### System
 
@@ -87,14 +83,6 @@ Install TPM then press `prefix + I` inside tmux to fetch plugins:
 
 ```bash
 git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
-```
-
-### Hammerspoon (macOS only)
-
-Point Hammerspoon to the stowed config:
-
-```bash
-defaults write org.hammerspoon.Hammerspoon MJConfigFile "~/.config/hammerspoon/init.lua"
 ```
 
 ## Key details
