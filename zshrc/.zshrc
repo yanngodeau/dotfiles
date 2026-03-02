@@ -1,14 +1,17 @@
-# Path to your oh-my-zsh installation.
-# Reevaluate the prompt string each time it's displaying a prompt
 setopt prompt_subst
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
 autoload bashcompinit && bashcompinit
 autoload -Uz compinit
 compinit
-source <(kubectl completion zsh)
+command -v kubectl &>/dev/null && source <(kubectl completion zsh)
 complete -C '/usr/local/bin/aws_completer' aws
 
-source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+# Autosuggestions (homebrew or system path)
+if command -v brew &>/dev/null; then
+  source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+elif [ -f /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh ]; then
+  source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+fi
 bindkey '^w' autosuggest-execute
 bindkey '^e' autosuggest-accept
 bindkey '^u' autosuggest-toggle
@@ -19,10 +22,10 @@ bindkey '^j' down-line-or-search
 eval "$(starship init zsh)"
 export STARSHIP_CONFIG=~/.config/starship/starship.toml
 
-# You may need to manually set your language environment
 export LANG=en_US.UTF-8
-
-export EDITOR=/opt/homebrew/bin/nvim
+export EDITOR=nvim
+export XDG_CONFIG_HOME="$HOME/.config"
+export NIX_CONF_DIR=$HOME/.config/nix
 
 alias la=tree
 alias cat=bat
@@ -59,15 +62,15 @@ alias .....="cd ../../../.."
 alias ......="cd ../../../../.."
 
 # GO
-export GOPATH='/Users/omerxx/go'
+export GOPATH="$HOME/go"
 
 # VIM
-alias v="/Users/omerxx/.nix-profile/bin/nvim"
+alias v="nvim"
 
 # Nmap
 alias nm="nmap -sC -sV -oN nmap"
 
-export PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Users/omer/.vimpkg/bin:${GOPATH}/bin:/Users/omerxx/.cargo/bin
+export PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:${GOPATH}/bin:$HOME/.cargo/bin:$PATH
 
 alias cl='clear'
 
@@ -78,15 +81,13 @@ alias ka="kubectl apply -f"
 alias kg="kubectl get"
 alias kd="kubectl describe"
 alias kdel="kubectl delete"
-alias kl="kubectl logs"
+alias kl="kubectl logs -f"
 alias kgpo="kubectl get pod"
 alias kgd="kubectl get deployments"
 alias kc="kubectx"
 alias kns="kubens"
-alias kl="kubectl logs -f"
 alias ke="kubectl exec -it"
 alias kcns='kubectl config set-context --current --namespace'
-alias podname=''
 
 # HTTP requests with xh!
 alias http="xh"
@@ -106,19 +107,21 @@ alias massdns='~/hacking/tools/massdns/bin/massdns -r ~/hacking/tools/massdns/li
 alias server='python -m http.server 4445'
 alias tunnel='ngrok http 4445'
 alias fuzz='ffuf -w ~/hacking/SecLists/content_discovery_all.txt -mc all -u'
-alias gr='~/go/src/github.com/tomnomnom/gf/gf'
 
 ### FZF ###
 export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow'
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
-export PATH=/opt/homebrew/bin:$PATH
+# Homebrew (macOS only)
+if command -v brew &>/dev/null; then
+  export PATH=$(brew --prefix)/bin:$PATH
+fi
 
-alias mat='osascript -e "tell application \"System Events\" to key code 126 using {command down}" && tmux neww "cmatrix"'
-
-# Nix!
-export NIX_CONF_DIR=$HOME/.config/nix
-export PATH=/run/current-system/sw/bin:$PATH
+# Nix
+export PATH=/run/current-system/sw/bin:$HOME/.nix-profile/bin:$PATH
+if [ -e '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh' ]; then
+  . '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
+fi
 
 function ranger {
 	local IFS=$'\t\n'
@@ -137,19 +140,20 @@ function ranger {
 }
 alias rr='ranger'
 
-# navigation
+# Navigation
 cx() { cd "$@" && l; }
 fcd() { cd "$(find . -type d -not -path '*/.*' | fzf)" && l; }
-f() { echo "$(find . -type f -not -path '*/.*' | fzf)" | pbcopy }
+f() { echo "$(find . -type f -not -path '*/.*' | fzf)" | ${CLIPBOARD_CMD:-pbcopy} }
 fv() { nvim "$(find . -type f -not -path '*/.*' | fzf)" }
 
- # Nix
- if [ -e '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh' ]; then
-	 . '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
- fi
- # End Nix
-
-export XDG_CONFIG_HOME="/Users/omerxx/.config"
+# Clipboard helper (pbcopy on macOS, xclip/wl-copy on Linux)
+if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+  if command -v wl-copy &>/dev/null; then
+    export CLIPBOARD_CMD="wl-copy"
+  elif command -v xclip &>/dev/null; then
+    export CLIPBOARD_CMD="xclip -selection clipboard"
+  fi
+fi
 
 eval "$(zoxide init zsh)"
 eval "$(atuin init zsh)"
