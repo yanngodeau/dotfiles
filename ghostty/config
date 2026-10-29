@@ -5,5 +5,4 @@ mouse-hide-while-typing = true
 window-decoration = true
 macos-option-as-alt = false
 background-opacity = 0.7
-background-blur-radius = 20
 

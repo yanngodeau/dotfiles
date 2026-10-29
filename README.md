@@ -2,93 +2,39 @@
 
 Cross-platform dotfiles (macOS & Linux) managed with [GNU Stow](https://www.gnu.org/software/stow/). Each directory is a module that gets symlinked into `~/.config`.
 
-## Prerequisites
-
-- [GNU Stow](https://www.gnu.org/software/stow/)
-- [Nix](https://nixos.org/) (optional, for nix-darwin on macOS)
-
 ## Installation
 
 ```bash
-stow .
+git clone https://github.com/yanngodeau/dotfiles ~/dotfiles
+cd ~/dotfiles
+./setup.sh
 ```
 
-This reads `.stowrc` which targets `~/.config`, so every module directory (e.g. `nvim/`) is symlinked to `~/.config/nvim/`.
+One command sets the machine up. The script:
 
-### Set nushell as default shell
+1. installs the tools: Homebrew (installed if missing) and the `Brewfile` on macOS, `apt` plus the official starship/atuin installers on Debian/Ubuntu;
+2. symlinks every module into `~/.config` with Stow (re-runnable, never overwrites existing files);
+3. links `~/.zshrc` to the stowed zsh config;
+4. offers to set nushell as the default shell;
+5. lists anything the configs reference that is still not installed.
 
-**macOS** (via nix-darwin, requires `--impure` for dynamic username):
-
-```bash
-darwin-rebuild switch --flake ~/.config/nix-darwin#default --impure
-```
-
-**Linux**:
-
-```bash
-chsh -s $(which nu)
-```
+Options: `-c` configs only (no package installation), `-n` dry run of the stow step, `-D` remove the symlinks.
 
 ## What's included
 
-### Shell
-
 | Module | Description |
 |--------|-------------|
-| `nushell` | Nushell — default shell, aliases (git, docker, k8s), vi mode, carapace completions, zoxide, direnv, starship |
-| `zshrc` | Zsh — fallback shell, aliases, FZF integration, zoxide, direnv |
-| `starship` | Starship prompt — Catppuccin Mocha palette, AWS/Kubernetes context |
+| `nushell` | Nushell — default shell. Only overrides on top of the built-in defaults: vi mode, aliases (git, k8s), direnv hook, starship/zoxide/carapace/atuin integration |
+| `zshrc` | Zsh — fallback shell, same aliases, FZF, zoxide, atuin, direnv. Every integration is guarded, so it loads fine with tools missing |
+| `starship` | Starship prompt — Catppuccin Mocha palette, AWS context |
 | `atuin` | Shell history sync and search |
-
-### Terminal emulators
-
-| Module | Description |
-|--------|-------------|
-| `ghostty` | Ghostty — Catppuccin Mocha, 70% opacity, blur, multiple theme variants |
-| `wezterm` | WezTerm — Catppuccin Mocha, JetBrains Mono 16pt, custom keybinds |
-
-### Terminal multiplexers
-
-| Module | Description |
-|--------|-------------|
-| `tmux` | Tmux — prefix `Ctrl-A`, vi keybindings, Catppuccin theme, 15+ plugins (TPM, resurrect, continuum, sessionx, floax) |
-| `zellij` | Zellij — custom keybindings, hjkl pane navigation |
-
-### Editor
-
-| Module | Description |
-|--------|-------------|
-| `nvim` | Neovim with [LazyVim](https://lazyvim.github.io/) — LSP, completion (blink.cmp), treesitter, fzf-lua, gitsigns, mini plugins, Go support |
-
-### Window management (macOS only)
-
-| Module | Description |
-|--------|-------------|
-| `aerospace` | AeroSpace tiling window manager — 4 workspaces, auto-layout, floating rules per app |
-| `karabiner` | Karabiner-Elements keyboard remapping |
-
-### System
-
-| Module | Description |
-|--------|-------------|
-| `nix` | Nix package manager configuration (flakes enabled) |
-| `nix-darwin` | Nix Darwin system config (macOS only) — homebrew, dock, Finder preferences, TouchID sudo, home-manager, nushell as default shell |
-| `ssh` | SSH client configuration |
-
-## Post-install
-
-### Tmux plugins
-
-Install TPM then press `prefix + I` inside tmux to fetch plugins:
-
-```bash
-git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
-```
+| `ghostty` | Ghostty terminal — Catppuccin Mocha, 70% opacity, blur, four Catppuccin theme variants |
+| `nvim` | Neovim with [LazyVim](https://lazyvim.github.io/) — Go, Docker, Helm, Terraform, TypeScript extras, yamlfmt, codesnap |
 
 ## Key details
 
-- **Theme**: Catppuccin Mocha across Ghostty, WezTerm, Tmux, Starship
+- **Theme**: Catppuccin Mocha across Ghostty, Starship
 - **Font**: JetBrains Mono
 - **Shell**: Nushell (default), Zsh (fallback)
 - **Editor**: Neovim via `v` alias
-- **Navigation aliases**: `cx` (cd + list), `fcd` (fuzzy cd), `fv` (fuzzy vim), `rr` (ranger)
+- **Navigation**: `cx` (cd + list), `fcd` (fuzzy cd), `fv` (fuzzy vim), `rr` (ranger, zsh only)

@@ -1,51 +1,96 @@
-setopt prompt_subst
-zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
-autoload bashcompinit && bashcompinit
-autoload -Uz compinit
-compinit
-command -v kubectl &>/dev/null && source <(kubectl completion zsh)
-complete -C '/usr/local/bin/aws_completer' aws
+# Zsh config — fallback shell (nushell is the default), kept lean.
 
-# Autosuggestions (homebrew or system path)
-if command -v brew &>/dev/null; then
-  source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-elif [ -f /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh ]; then
-  source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
-fi
-bindkey '^w' autosuggest-execute
-bindkey '^e' autosuggest-accept
-bindkey '^u' autosuggest-toggle
+# ============================================================================
+# Environment
+# ============================================================================
+export LANG=en_US.UTF-8
+export EDITOR=nvim
+export VISUAL=nvim
+export XDG_CONFIG_HOME="$HOME/.config"
+export STARSHIP_CONFIG="$XDG_CONFIG_HOME/starship/starship.toml"
+export GOPATH="$HOME/go"
+export KUBECONFIG="$HOME/.kube/config"
+
+# PATH: homebrew and user bins take precedence over system dirs
+typeset -U path
+path=(
+  /opt/homebrew/bin
+  /opt/homebrew/sbin
+  "$HOME/.local/bin"
+  "$GOPATH/bin"
+  "$HOME/.cargo/bin"
+  $path
+)
+
+# ============================================================================
+# Completion
+# ============================================================================
+autoload -Uz compinit bashcompinit
+compinit
+bashcompinit
+zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
+command -v kubectl &>/dev/null && source <(kubectl completion zsh)
+command -v aws_completer &>/dev/null && complete -C "$(command -v aws_completer)" aws
+
+# ============================================================================
+# Plugins & key bindings
+# ============================================================================
+for f in \
+  "${HOMEBREW_PREFIX:-/opt/homebrew}/share/zsh-autosuggestions/zsh-autosuggestions.zsh" \
+  /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh \
+  /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh; do
+  if [ -f "$f" ]; then
+    source "$f"
+    bindkey '^w' autosuggest-execute
+    bindkey '^e' autosuggest-accept
+    bindkey '^u' autosuggest-toggle
+    break
+  fi
+done
+unset f
+
 bindkey '^L' vi-forward-word
 bindkey '^k' up-line-or-search
 bindkey '^j' down-line-or-search
+bindkey jj vi-cmd-mode
 
-eval "$(starship init zsh)"
-export STARSHIP_CONFIG=~/.config/starship/starship.toml
+# ============================================================================
+# Aliases
+# ============================================================================
+command -v bat  &>/dev/null && alias cat=bat
+command -v tree &>/dev/null && alias la=tree
+command -v xh   &>/dev/null && alias http=xh
+alias v=nvim
+alias cl=clear
+alias nm="nmap -sC -sV -oN nmap"
 
-export LANG=en_US.UTF-8
-export EDITOR=nvim
-export XDG_CONFIG_HOME="$HOME/.config"
-export NIX_CONF_DIR=$HOME/.config/nix
+# eza
+alias l="eza -l --icons --git -a"
+alias lt="eza --tree --level=2 --long --icons --git"
+alias ltree="eza --tree --level=2 --icons --git"
 
-alias la=tree
-alias cat=bat
+# Dirs
+alias ..="cd .."
+alias ...="cd ../.."
+alias ....="cd ../../.."
+alias .....="cd ../../../.."
 
 # Git
+alias gst="git status"
 alias gc="git commit -m"
 alias gca="git commit -a -m"
 alias gp="git push origin HEAD"
 alias gpu="git pull origin"
-alias gst="git status"
-alias glog="git log --graph --topo-order --pretty='%w(100,0,6)%C(yellow)%h%C(bold)%C(black)%d %C(cyan)%ar %C(green)%an%n%C(bold)%C(white)%s %N' --abbrev-commit"
-alias gdiff="git diff"
 alias gco="git checkout"
-alias gb='git branch'
-alias gba='git branch -a'
-alias gadd='git add'
-alias ga='git add -p'
-alias gcoall='git checkout -- .'
-alias gr='git remote'
-alias gre='git reset'
+alias gcoall="git checkout -- ."
+alias gb="git branch"
+alias gba="git branch -a"
+alias gadd="git add"
+alias ga="git add -p"
+alias gdiff="git diff"
+alias gr="git remote"
+alias gre="git reset"
+alias glog="git log --graph --topo-order --pretty='%w(100,0,6)%C(yellow)%h%C(bold)%C(black)%d %C(cyan)%ar %C(green)%an%n%C(bold)%C(white)%s %N' --abbrev-commit"
 
 # Docker
 alias dco="docker compose"
@@ -54,107 +99,58 @@ alias dpa="docker ps -a"
 alias dl="docker ps -l -q"
 alias dx="docker exec -it"
 
-# Dirs
-alias ..="cd .."
-alias ...="cd ../.."
-alias ....="cd ../../.."
-alias .....="cd ../../../.."
-alias ......="cd ../../../../.."
-
-# GO
-export GOPATH="$HOME/go"
-
-# VIM
-alias v="nvim"
-
-# Nmap
-alias nm="nmap -sC -sV -oN nmap"
-
-export PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:${GOPATH}/bin:$HOME/.cargo/bin:$PATH
-
-alias cl='clear'
-
-# K8S
-export KUBECONFIG=~/.kube/config
+# Kubernetes
 alias k="kubectl"
 alias ka="kubectl apply -f"
 alias kg="kubectl get"
+alias kgpo="kubectl get pod"
+alias kgd="kubectl get deployments"
 alias kd="kubectl describe"
 alias kdel="kubectl delete"
 alias kl="kubectl logs -f"
-alias kgpo="kubectl get pod"
-alias kgd="kubectl get deployments"
+alias ke="kubectl exec -it"
 alias kc="kubectx"
 alias kns="kubens"
-alias ke="kubectl exec -it"
-alias kcns='kubectl config set-context --current --namespace'
+alias kcns="kubectl config set-context --current --namespace"
 
-# HTTP requests with xh!
-alias http="xh"
-
-# VI Mode!!!
-bindkey jj vi-cmd-mode
-
-# Eza
-alias l="eza -l --icons --git -a"
-alias lt="eza --tree --level=2 --long --icons --git"
-alias ltree="eza --tree --level=2  --icons --git"
-
-# SEC STUFF
-alias gobust='gobuster dir --wordlist ~/security/wordlists/diccnoext.txt --wildcard --url'
-alias dirsearch='python dirsearch.py -w db/dicc.txt -b -u'
-alias massdns='~/hacking/tools/massdns/bin/massdns -r ~/hacking/tools/massdns/lists/resolvers.txt -t A -o S bf-targets.txt -w livehosts.txt -s 4000'
-alias server='python -m http.server 4445'
-alias tunnel='ngrok http 4445'
-alias fuzz='ffuf -w ~/hacking/SecLists/content_discovery_all.txt -mc all -u'
-
-### FZF ###
-export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow'
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-
-# Homebrew (macOS only)
-if command -v brew &>/dev/null; then
-  export PATH=$(brew --prefix)/bin:$PATH
+# ============================================================================
+# Functions
+# ============================================================================
+# Clipboard: pbcopy on macOS, wl-copy / xclip on Linux
+if command -v pbcopy &>/dev/null; then
+  CLIPBOARD_CMD="pbcopy"
+elif command -v wl-copy &>/dev/null; then
+  CLIPBOARD_CMD="wl-copy"
+elif command -v xclip &>/dev/null; then
+  CLIPBOARD_CMD="xclip -selection clipboard"
 fi
 
-# Nix
-export PATH=/run/current-system/sw/bin:$HOME/.nix-profile/bin:$PATH
-if [ -e '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh' ]; then
-  . '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
-fi
-
-function ranger {
-	local IFS=$'\t\n'
-	local tempfile="$(mktemp -t tmp.XXXXXX)"
-	local ranger_cmd=(
-		command
-		ranger
-		--cmd="map Q chain shell echo %d > "$tempfile"; quitall"
-	)
-
-	${ranger_cmd[@]} "$@"
-	if [[ -f "$tempfile" ]] && [[ "$(cat -- "$tempfile")" != "$(echo -n `pwd`)" ]]; then
-		cd -- "$(cat "$tempfile")" || return
-	fi
-	command rm -f -- "$tempfile" 2>/dev/null
-}
-alias rr='ranger'
-
-# Navigation
-cx() { cd "$@" && l; }
+cx()  { cd "$@" && l; }
 fcd() { cd "$(find . -type d -not -path '*/.*' | fzf)" && l; }
-f() { echo "$(find . -type f -not -path '*/.*' | fzf)" | ${CLIPBOARD_CMD:-pbcopy} }
-fv() { nvim "$(find . -type f -not -path '*/.*' | fzf)" }
+f()   { find . -type f -not -path '*/.*' | fzf | ${=CLIPBOARD_CMD:-cat}; }
+fv()  { nvim "$(find . -type f -not -path '*/.*' | fzf)"; }
 
-# Clipboard helper (pbcopy on macOS, xclip/wl-copy on Linux)
-if [[ "$OSTYPE" == "linux-gnu"* ]]; then
-  if command -v wl-copy &>/dev/null; then
-    export CLIPBOARD_CMD="wl-copy"
-  elif command -v xclip &>/dev/null; then
-    export CLIPBOARD_CMD="xclip -selection clipboard"
+# ranger: cd into the last visited directory on quit (Q)
+ranger() {
+  local IFS=$'\t\n'
+  local tempfile
+  tempfile="$(mktemp -t tmp.XXXXXX)"
+  command ranger --cmd="map Q chain shell echo %d > \"$tempfile\"; quitall" "$@"
+  if [[ -f "$tempfile" ]] && [[ "$(cat -- "$tempfile")" != "$PWD" ]]; then
+    cd -- "$(cat "$tempfile")" || return
   fi
-fi
+  command rm -f -- "$tempfile" 2>/dev/null
+}
+alias rr=ranger
 
-eval "$(zoxide init zsh)"
-eval "$(atuin init zsh)"
-eval "$(direnv hook zsh)"
+# ============================================================================
+# Tool integrations
+# ============================================================================
+export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow'
+if command -v fzf &>/dev/null; then
+  source <(fzf --zsh) 2>/dev/null || { [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh; }
+fi
+command -v starship &>/dev/null && eval "$(starship init zsh)"
+command -v zoxide   &>/dev/null && eval "$(zoxide init zsh)"
+command -v atuin    &>/dev/null && eval "$(atuin init zsh)"
+command -v direnv   &>/dev/null && eval "$(direnv hook zsh)"
