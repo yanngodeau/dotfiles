@@ -10,25 +10,15 @@ cd ~/dotfiles
 ./setup.sh
 ```
 
-The script:
+One command sets the machine up. The script:
 
-- symlinks every module into `~/.config` with Stow (re-runnable, never overwrites existing files);
-- links `~/.zshrc` to the stowed zsh config;
-- lists the tools the configs reference that are not installed yet.
+1. installs the tools: Homebrew (installed if missing) and the `Brewfile` on macOS, `apt` plus the official starship/atuin installers on Debian/Ubuntu;
+2. symlinks every module into `~/.config` with Stow (re-runnable, never overwrites existing files);
+3. links `~/.zshrc` to the stowed zsh config;
+4. offers to set nushell as the default shell;
+5. lists anything the configs reference that is still not installed.
 
-`./setup.sh -n` is a dry run, `./setup.sh -D` removes the symlinks.
-
-### Set nushell as default shell
-
-```bash
-chsh -s "$(which nu)"
-```
-
-On macOS, the nushell binary must be listed in `/etc/shells` first:
-
-```bash
-which nu | sudo tee -a /etc/shells
-```
+Options: `-c` configs only (no package installation), `-n` dry run of the stow step, `-D` remove the symlinks.
 
 ## What's included
 
