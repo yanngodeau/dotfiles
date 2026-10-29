@@ -13,7 +13,6 @@ cd ~/dotfiles
 The script:
 
 - symlinks every module into `~/.config` with Stow (re-runnable, never overwrites existing files);
-- skips the macOS-only `nix-darwin` module on Linux;
 - links `~/.zshrc` to the stowed zsh config;
 - lists the tools the configs reference that are not installed yet.
 
@@ -21,16 +20,14 @@ The script:
 
 ### Set nushell as default shell
 
-**macOS** (via nix-darwin, requires `--impure` for dynamic username):
-
 ```bash
-darwin-rebuild switch --flake ~/.config/nix-darwin#default --impure
+chsh -s "$(which nu)"
 ```
 
-**Linux**:
+On macOS, the nushell binary must be listed in `/etc/shells` first:
 
 ```bash
-chsh -s $(which nu)
+which nu | sudo tee -a /etc/shells
 ```
 
 ## What's included
@@ -43,8 +40,6 @@ chsh -s $(which nu)
 | `atuin` | Shell history sync and search |
 | `ghostty` | Ghostty terminal — Catppuccin Mocha, 70% opacity, blur, four Catppuccin theme variants |
 | `nvim` | Neovim with [LazyVim](https://lazyvim.github.io/) — Go, Docker, Helm, Terraform, TypeScript extras, yamlfmt, codesnap |
-| `nix` | Nix package manager configuration (flakes enabled) |
-| `nix-darwin` | Nix Darwin system config (macOS only) — homebrew, dock, Finder preferences, TouchID sudo, home-manager, nushell as default shell |
 
 ## Key details
 

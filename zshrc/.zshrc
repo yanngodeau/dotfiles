@@ -7,16 +7,13 @@ export LANG=en_US.UTF-8
 export EDITOR=nvim
 export VISUAL=nvim
 export XDG_CONFIG_HOME="$HOME/.config"
-export NIX_CONF_DIR="$XDG_CONFIG_HOME/nix"
 export STARSHIP_CONFIG="$XDG_CONFIG_HOME/starship/starship.toml"
 export GOPATH="$HOME/go"
 export KUBECONFIG="$HOME/.kube/config"
 
-# PATH: nix, homebrew and user bins take precedence over system dirs
+# PATH: homebrew and user bins take precedence over system dirs
 typeset -U path
 path=(
-  /run/current-system/sw/bin
-  "$HOME/.nix-profile/bin"
   /opt/homebrew/bin
   /opt/homebrew/sbin
   "$HOME/.local/bin"
@@ -24,9 +21,6 @@ path=(
   "$HOME/.cargo/bin"
   $path
 )
-if [ -e /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh ]; then
-  . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
-fi
 
 # ============================================================================
 # Completion

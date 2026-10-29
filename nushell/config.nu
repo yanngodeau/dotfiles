@@ -50,7 +50,6 @@ alias ll = ls -l
 alias lt = eza --tree --level=2 --long --icons --git
 alias c = clear
 alias v = nvim
-alias hms = home-manager switch
 alias asr = atuin scripts run
 
 # Git

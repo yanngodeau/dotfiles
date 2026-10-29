@@ -5,15 +5,13 @@
 # and machine setup live here. config.nu is loaded after this file.
 
 # ============================================================================
-# PATH (skipped inside nix / devbox shells, which manage their own PATH)
+# PATH (skipped inside devbox shells, which manage their own PATH)
 # ============================================================================
-if 'IN_NIX_SHELL' not-in $env and 'DEVBOX_SHELL_ENABLED' not-in $env {
+if 'DEVBOX_SHELL_ENABLED' not-in $env {
     let extra_paths = [
         "/opt/homebrew/bin"
         "/opt/homebrew/sbin"
         "/opt/homebrew/opt/ruby/bin"
-        "/run/current-system/sw/bin"
-        ($nu.home-dir | path join ".nix-profile" "bin")
         ($nu.home-dir | path join ".local" "bin")
         ($nu.home-dir | path join "go" "bin")
         ($nu.home-dir | path join ".cargo" "bin")
@@ -30,7 +28,6 @@ let config_dir = ($env.XDG_CONFIG_HOME? | default ($nu.home-dir | path join ".co
 $env.EDITOR = "nvim"
 $env.VISUAL = "nvim"
 $env.STARSHIP_CONFIG = ($config_dir | path join "starship" "starship.toml")
-$env.NIX_CONF_DIR = ($config_dir | path join "nix")
 $env.GOPATH = ($nu.home-dir | path join "go")
 $env.DIRENV_LOG_FORMAT = ""
 

@@ -28,21 +28,15 @@ info() { printf '\033[1;34m==>\033[0m %s\n' "$*"; }
 warn() { printf '\033[1;33mwarning:\033[0m %s\n' "$*" >&2; }
 
 if ! command -v stow >/dev/null; then
-  echo "GNU Stow is required: brew install stow | apt install stow | nix profile install nixpkgs#stow" >&2
+  echo "GNU Stow is required: brew install stow | apt install stow" >&2
   exit 1
-fi
-
-# macOS-only modules are skipped on other systems.
-ignore_args=()
-if [[ "$(uname -s)" != "Darwin" ]]; then
-  ignore_args+=(--ignore='^/nix-darwin')
 fi
 
 mkdir -p "$HOME/.config"
 
 info "Stowing modules into ~/.config ${dry_run:+(dry run)}"
 # shellcheck disable=SC2086
-stow $dry_run $action --verbose=1 "${ignore_args[@]}" .
+stow $dry_run $action --verbose=1 .
 
 [[ -n "$dry_run" || "$action" == "--delete" ]] && exit 0
 
