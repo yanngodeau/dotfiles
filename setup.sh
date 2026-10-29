@@ -43,7 +43,7 @@ install_macos() {
     eval "$(/opt/homebrew/bin/brew shellenv 2>/dev/null || /usr/local/bin/brew shellenv)"
   fi
   info "Installing packages from Brewfile"
-  brew bundle --file=Brewfile
+  brew bundle --file=Brewfile --verbose
 }
 
 install_linux() {
