@@ -13,9 +13,8 @@ cd ~/dotfiles
 The script:
 
 - symlinks every module into `~/.config` with Stow (re-runnable, never overwrites existing files);
-- skips the macOS-only modules (`karabiner`, `nix-darwin`) on Linux;
+- skips the macOS-only `nix-darwin` module on Linux;
 - links `~/.zshrc` to the stowed zsh config;
-- installs [TPM](https://github.com/tmux-plugins/tpm) if tmux is present (then press `prefix + I` inside tmux);
 - lists the tools the configs reference that are not installed yet.
 
 `./setup.sh -n` is a dry run, `./setup.sh -D` removes the symlinks.
@@ -43,15 +42,13 @@ chsh -s $(which nu)
 | `starship` | Starship prompt — Catppuccin Mocha palette, AWS context |
 | `atuin` | Shell history sync and search |
 | `ghostty` | Ghostty terminal — Catppuccin Mocha, 70% opacity, blur, four Catppuccin theme variants |
-| `tmux` | Tmux — prefix `Ctrl-A`, vi keybindings, Catppuccin theme, TPM plugins (resurrect, continuum, sessionx, floax, fzf) |
 | `nvim` | Neovim with [LazyVim](https://lazyvim.github.io/) — Go, Docker, Helm, Terraform, TypeScript extras, yamlfmt, codesnap |
-| `karabiner` | Karabiner-Elements keyboard remapping (macOS only) |
 | `nix` | Nix package manager configuration (flakes enabled) |
 | `nix-darwin` | Nix Darwin system config (macOS only) — homebrew, dock, Finder preferences, TouchID sudo, home-manager, nushell as default shell |
 
 ## Key details
 
-- **Theme**: Catppuccin Mocha across Ghostty, Tmux, Starship
+- **Theme**: Catppuccin Mocha across Ghostty, Starship
 - **Font**: JetBrains Mono
 - **Shell**: Nushell (default), Zsh (fallback)
 - **Editor**: Neovim via `v` alias

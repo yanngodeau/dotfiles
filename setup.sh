@@ -35,7 +35,7 @@ fi
 # macOS-only modules are skipped on other systems.
 ignore_args=()
 if [[ "$(uname -s)" != "Darwin" ]]; then
-  ignore_args+=(--ignore='^/(karabiner|nix-darwin)')
+  ignore_args+=(--ignore='^/nix-darwin')
 fi
 
 mkdir -p "$HOME/.config"
@@ -53,12 +53,6 @@ if [[ ! -e "$HOME/.zshrc" ]]; then
   info "Linked ~/.zshrc -> $zshrc_target"
 elif [[ "$(readlink "$HOME/.zshrc" || true)" != "$zshrc_target" ]]; then
   warn "~/.zshrc already exists and is not managed here; add 'source $zshrc_target' to it"
-fi
-
-# Tmux plugin manager, then press prefix + I inside tmux to fetch plugins.
-if command -v tmux >/dev/null && [[ ! -d "$HOME/.tmux/plugins/tpm" ]]; then
-  info "Installing TPM"
-  git clone --depth 1 https://github.com/tmux-plugins/tpm "$HOME/.tmux/plugins/tpm"
 fi
 
 for tool in nu starship zoxide atuin carapace direnv fzf eza bat nvim; do
