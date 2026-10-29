@@ -35,7 +35,7 @@ fi
 # macOS-only modules are skipped on other systems.
 ignore_args=()
 if [[ "$(uname -s)" != "Darwin" ]]; then
-  ignore_args+=(--ignore='^/(aerospace|karabiner|nix-darwin)')
+  ignore_args+=(--ignore='^/(karabiner|nix-darwin)')
 fi
 
 mkdir -p "$HOME/.config"

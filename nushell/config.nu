@@ -41,12 +41,6 @@ def --env cx [dir: path] {
     ls -l
 }
 
-# macOS: fuzzy-pick an AeroSpace window and focus it
-def ff [] {
-    aerospace list-windows --all
-    | fzf --bind 'enter:execute(bash -c "aerospace focus --window-id {1}")+abort'
-}
-
 # ============================================================================
 # Aliases
 # ============================================================================
@@ -58,7 +52,6 @@ alias c = clear
 alias v = nvim
 alias hms = home-manager switch
 alias asr = atuin scripts run
-alias as = aerospace
 
 # Git
 alias gst = git status
