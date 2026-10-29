@@ -1,6 +1,5 @@
-# home.nix
-# home-manager switch 
-
+# home-manager configuration, wired in from flake.nix.
+# Dotfiles themselves are managed with GNU Stow (see README), not home.file.
 { config, pkgs, ... }:
 
 let
@@ -11,44 +10,21 @@ in
   home.homeDirectory = "/Users/${username}";
   home.stateVersion = "23.05"; # Please read the comment before changing.
 
-# Makes sense for user specific applications that shouldn't be available system-wide
-  home.packages = [
-  ];
-
-  # Home Manager is pretty good at managing dotfiles. The primary way to manage
-  # plain files is through 'home.file'.
-  home.file = {
-    # ".zshrc".source = ~/dotfiles/zshrc/.zshrc;
-    # ".config/wezterm".source = ~/dotfiles/wezterm;
-    # ".config/skhd".source = ~/dotfiles/skhd;
-    # ".config/starship".source = ~/dotfiles/starship;
-    # ".config/zellij".source = ~/dotfiles/zellij;
-    # ".config/nvim".source = ~/dotfiles/nvim;
-    # ".config/nix".source = ~/dotfiles/nix;
-    # ".config/nix-darwin".source = ~/dotfiles/nix-darwin;
-    # ".config/tmux".source = ~/dotfiles/tmux;
-    # ".config/ghostty".source = ~/dotfiles/ghostty;
-    # ".config/aerospace".source = ~/dotfiles/aerospace;
-    # ".config/sketchybar".source = ~/dotfiles/sketchybar;
-    # ".config/nushell".source = ~/dotfiles/nushell;
-  };
-
-  home.sessionVariables = {
-  };
+  # User-specific packages that should not be available system-wide
+  home.packages = [ ];
 
   home.sessionPath = [
     "/run/current-system/sw/bin"
-      "$HOME/.nix-profile/bin"
+    "$HOME/.nix-profile/bin"
   ];
+
   programs.home-manager.enable = true;
+  # The real zsh config is ~/.config/zshrc/.zshrc (stowed); zsh here only
+  # makes sure nix paths are available before it loads.
   programs.zsh = {
     enable = true;
     initExtra = ''
-      # Add any additional configurations here
-      export PATH=/run/current-system/sw/bin:$HOME/.nix-profile/bin:$PATH
-      if [ -e '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh' ]; then
-        . '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
-      fi
+      source "$HOME/.config/zshrc/.zshrc"
     '';
   };
 }
